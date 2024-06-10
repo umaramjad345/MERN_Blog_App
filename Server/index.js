@@ -8,12 +8,22 @@ import authRoutes from "./routes/authRoutes.js";
 import commentRoutes from "./routes/commentRoutes.js";
 import postRoutes from "./routes/postRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
+import path from "path"
 
 const app = express();
 dotenv.config({ path: "./config/config.env" });
 const Port = process.env.PORT || 3000;
 
 dbConnection();
+app.listen(Port, (error) => {
+  try {
+    console.log(`Server is Running on http://localhost:${Port}`);
+  } catch (error) {
+    console.log("Server Couldn't be Started");
+  }
+});
+
+const _direname = path.resolve()
 
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
@@ -26,17 +36,14 @@ app.use(
   })
 );
 
-app.listen(Port, (error) => {
-  try {
-    console.log(`Server is Running on http://localhost:${Port}`);
-  } catch (error) {
-    console.log("Server Couldn't be Started");
-  }
-});
-
 app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/comment", commentRoutes);
 app.use("/api/v1/post", postRoutes);
 app.use("/api/v1/user", userRoutes);
+
+app.use(express.static(path.join(_direname, '/client/dist')))
+app.get('*', (req,res)=>{
+  res.sendFile(path.join(_direname, 'client', 'dis', 'index.html'))
+})
 
 app.use(errorMiddleware);

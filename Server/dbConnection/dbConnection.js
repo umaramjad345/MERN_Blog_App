@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 
 export const dbConnection = () => {
   mongoose
-    .connect(process.env.MONGO_URI)
+    .connect(process.env.MONGO_URL)
     .then((res) => {
       console.log("Database Connection Successful");
     })
@@ -13,7 +13,8 @@ export const dbConnection = () => {
   mongoose.connection.on("disconnected", () => {
     console.log("Database Disconnected");
   });
-  mongoose.connection.on("error", () => {
+  mongoose.connection.on("error", (error) => {
+    console.log(error);
     console.log("Database Connection Error");
   });
   mongoose.connection.on("disconnected", () => {
